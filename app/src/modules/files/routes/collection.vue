@@ -332,7 +332,9 @@ function useFileUpload() {
 			notificationsStore.remove(dragNotificationID);
 		}
 
-		const files = Array.from(event.dataTransfer.files).filter((file) => file.type);
+		// Browsers report dropped folders as zero-byte files without a type. Skip those, but keep untyped files
+		// with content (e.g. proprietary formats the browser has no MIME type for).
+		const files = Array.from(event.dataTransfer.files).filter((file) => file.type || file.size > 0);
 
 		fileUploadNotificationID = notificationsStore.add({
 			title: t(
